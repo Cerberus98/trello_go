@@ -39,7 +39,7 @@ type TrelloBoardPrefs struct {
 }
 
 type TrelloBoard struct {
-	Client         HttpClient
+	Client         TrelloApi
 	Id             string
 	Name           string
 	IdOrganization string
@@ -152,8 +152,7 @@ type HttpClient struct {
 type TrelloApi interface {
 	GetVersion() int
 	getClient() *HttpClient
-	GetUrl(route ...string)
-	urlFor(apiKey, token, route string) string
+	UrlFor(apiKey string, token string, route ...string) string
 	GetBoard(id string) *TrelloBoard
 	GetCards(boardId string) []TrelloCard
 	GetMembers(boardId string) []TrelloMember
@@ -189,7 +188,16 @@ func (tapi *TrelloApiV1) GetBoard(id string) *TrelloBoard {
 	if err := tapi.get(url, &trelloBoard); err != nil {
 		log.Fatalf("Fetching boards failed with %s", err)
 	}
+	trelloBoard.Client = tapi
 	return &trelloBoard
+}
+
+func (board *TrelloBoard) GetCards() []TrelloCard {
+	return board.Client.GetCards(board.Id)
+}
+
+func (board *TrelloBoard) GetMembers() []TrelloMember {
+	return board.Client.GetMembers(board.Id)
 }
 
 func (tapi *TrelloApiV1) GetCards(boardId string) []TrelloCard {
