@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/cerberus98/trello_api/trello"
 	"os"
-	trello "trello_api/trello"
 )
 
 type TrelloCommand struct {
@@ -75,10 +75,16 @@ func main() {
 	board := trelloApi.GetBoard(*cfg.BoardId)
 	switch cmd {
 	case "cards_get":
-		fmt.Println(board.GetCards())
+		cards := board.GetCards()
+		for _, card := range cards {
+			fmt.Println(card.Id, card.Name)
+		}
 	case "members_get":
-		fmt.Println(board.GetMembers())
+		members := board.GetMembers()
+		for _, member := range members {
+			fmt.Println(member.Id, member.FullName)
+		}
 	case "board_get":
-		fmt.Println(board)
+		fmt.Println(board.Id, board.Name, board.ShortURL, board.Desc)
 	}
 }

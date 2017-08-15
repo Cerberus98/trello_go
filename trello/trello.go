@@ -1,4 +1,4 @@
-package model
+package trello
 
 import (
 	"bytes"
@@ -111,7 +111,7 @@ type TrelloMember struct {
 	Bio                      string
 	BioData                  string
 	Confirmed                bool
-	FullName                 bool
+	FullName                 string
 	IdPremOrgsAdmin          []string
 	Initials                 string
 	MemberType               string
@@ -202,6 +202,7 @@ func (board *TrelloBoard) GetMembers() []TrelloMember {
 
 func (tapi *TrelloApiV1) GetCards(boardId string) []TrelloCard {
 	var trelloCards []TrelloCard
+	// TODO Possible card filters: all, closed, none, open, visible.
 	url := tapi.UrlFor(tapi.Key, tapi.Token, "boards", boardId, "cards")
 	if err := tapi.get(url, &trelloCards); err != nil {
 		log.Fatalf("Fetching cards failed with %s", err)
